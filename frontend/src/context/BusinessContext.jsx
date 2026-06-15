@@ -18,7 +18,7 @@ function detectSubdomain() {
   return null;
 }
 
-export function BusinessProvider({ children }) {
+export function BusinessProvider({ children, slug }) {
   const [businessId, setBusinessId] = useState(null);
   const [business, setBusiness] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -37,7 +37,10 @@ export function BusinessProvider({ children }) {
         let resolvedId = null;
         let resolvedBusiness = null;
 
-        if (subdomain) {
+        if (slug) {
+          resolvedBusiness = await getBusinessBySubdomain(slug);
+          resolvedId = resolvedBusiness.id;
+        } else if (subdomain) {
           resolvedBusiness = await getBusinessBySubdomain(subdomain);
           resolvedId = resolvedBusiness.id;
         } else if (queryId) {
@@ -57,7 +60,7 @@ export function BusinessProvider({ children }) {
     }
 
     resolve();
-  }, []);
+  }, [slug]);
 
   return (
     <BusinessContext.Provider value={{ businessId, business, loading, error, setBusiness }}>

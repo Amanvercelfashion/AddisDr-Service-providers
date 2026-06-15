@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useParams } from 'react-router-dom';
 import { BusinessProvider } from './context/BusinessContext';
 import { SuperAdminProvider } from './context/SuperAdminContext';
 import { AdminAuthProvider } from './context/AdminAuthContext';
@@ -25,6 +25,17 @@ import SuperAdminLogin from './pages/superadmin/SuperAdminLogin';
 import SuperAdminLayout from './pages/superadmin/SuperAdminLayout';
 import SuperAdminDashboard from './pages/superadmin/SuperAdminDashboard';
 import BusinessesPage from './pages/superadmin/BusinessesPage';
+
+function BusinessBySlug() {
+  const { slug } = useParams();
+  return (
+    <BusinessProvider key={slug} slug={slug}>
+      <ThemeProvider>
+        <ServicePage />
+      </ThemeProvider>
+    </BusinessProvider>
+  );
+}
 
 const NotFound = () => (
   <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -82,6 +93,9 @@ export default function App() {
               <Route path="dashboard" element={<SuperAdminDashboard />} />
               <Route path="businesses" element={<BusinessesPage />} />
             </Route>
+
+            {/* ── Business by subdomain slug ───────────────── */}
+            <Route path="/:slug" element={<BusinessBySlug />} />
 
             {/* ── 404 ──────────────────────────────────────── */}
             <Route path="*" element={<NotFound />} />

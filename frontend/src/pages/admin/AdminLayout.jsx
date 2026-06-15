@@ -57,7 +57,7 @@ export default function AdminLayout() {
   if (!isLoggedIn(businessId)) return <AdminLogin />;
 
   const bizParam = `?business=${businessId}`;
-  const storeHref = `/store${bizParam}`;
+  const storeHref = business?.subdomain ? `/${business.subdomain}` : `/store${bizParam}`;
 
   return (
     <div className="min-h-screen bg-gray-100 flex">
