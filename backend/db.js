@@ -53,4 +53,4 @@ async function requireBusiness(req, res) {
   return biz;
 }
 
-module.exports = { pool, query, queryOne, getBusinessId, requireBusiness };
+module.exports = { query, queryOne, getBusinessId, requireBusiness };
