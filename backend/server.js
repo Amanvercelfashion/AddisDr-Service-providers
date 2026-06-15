@@ -50,7 +50,7 @@ app.get('/api/debug', (req, res) => {
     { label: '__dirname', p: __dirname },
     { label: 'cwd', p: process.cwd() },
   ];
-  const result = { req: { url: req.url, originalUrl: req.originalUrl, path: req.path } };
+  const result = { req: { url: req.url, originalUrl: req.originalUrl, path: req.path }, env: { ALLOWED_ORIGINS: process.env.ALLOWED_ORIGINS } };
   fsPaths.forEach(({ label, p }) => {
     try {
       const exists = fs.existsSync(p);
