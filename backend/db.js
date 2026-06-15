@@ -1,17 +1,22 @@
 const { Pool } = require('pg');
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }
-});
+let _pool = null;
 
-pool.on('error', err => {
-  console.error('Unexpected pool error:', err.message);
-});
+function getPool() {
+  if (_pool) return _pool;
+  _pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
+  });
+  _pool.on('error', err => {
+    console.error('Unexpected pool error:', err.message);
+  });
+  return _pool;
+}
 
 async function query(text, params) {
   try {
-    const res = await pool.query(text, params);
+    const res = await getPool().query(text, params);
     return res.rows;
   } catch (err) {
     throw new Error(`Database query error: ${err.message}`);
@@ -20,7 +25,7 @@ async function query(text, params) {
 
 async function queryOne(text, params) {
   try {
-    const res = await pool.query(text, params);
+    const res = await getPool().query(text, params);
     return res.rows[0] || null;
   } catch (err) {
     throw new Error(`Database query error: ${err.message}`);
