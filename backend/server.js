@@ -51,10 +51,10 @@ app.use('/api/analytics', require('./routes/analytics'));
 app.get('/api/debug', (req, res) => {
   const candidates = [
     { label: '__dirname', p: __dirname },
-    { label: '__dirname/node_modules', p: path.join(__dirname, 'node_modules') },
-    { label: '__dirname/node_modules/__frontend', p: path.join(__dirname, 'node_modules', '__frontend') },
-    { label: '__dirname/node_modules/__frontend/index.html', p: path.join(__dirname, 'node_modules', '__frontend', 'index.html') },
     { label: 'cwd', p: process.cwd() },
+    { label: 'cwd/frontend', p: path.join(process.cwd(), 'frontend') },
+    { label: 'cwd/frontend/dist', p: path.join(process.cwd(), 'frontend', 'dist') },
+    { label: 'cwd/frontend/dist/index.html', p: path.join(process.cwd(), 'frontend', 'dist', 'index.html') },
   ];
   const result = {};
   candidates.forEach(({ label, p }) => {
@@ -71,7 +71,7 @@ app.get('/api/debug', (req, res) => {
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok', timestamp: new Date().toISOString() }));
 
-const frontendDist = path.join(__dirname, 'node_modules', '__frontend');
+const frontendDist = path.join(process.cwd(), 'frontend', 'dist');
 if (fs.existsSync(frontendDist)) {
   app.use(express.static(frontendDist));
   app.get('*', (req, res) => res.sendFile(path.join(frontendDist, 'index.html')));
