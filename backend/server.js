@@ -50,11 +50,33 @@ app.use('/api/analytics', require('./routes/analytics'));
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok', timestamp: new Date().toISOString() }));
 
-const frontendDist = path.join(__dirname, '..', 'frontend', 'dist');
+const frontendDist = path.join(__dirname, 'public');
 if (fs.existsSync(frontendDist)) {
   app.use(express.static(frontendDist));
   app.get('*', (req, res) => res.sendFile(path.join(frontendDist, 'index.html')));
 }
+
+app.get('/api/debug', (req, res) => {
+  const candidates = [
+    { label: '__dirname', p: __dirname },
+    { label: 'public (rel __dirname)', p: path.join(__dirname, 'public') },
+    { label: 'public/index.html', p: path.join(__dirname, 'public', 'index.html') },
+    { label: '../frontend/dist', p: path.join(__dirname, '..', 'frontend', 'dist') },
+    { label: 'cwd', p: process.cwd() },
+    { label: 'cwd/backend/public', p: path.join(process.cwd(), 'backend', 'public') },
+  ];
+  const result = {};
+  candidates.forEach(({ label, p }) => {
+    try {
+      const exists = fs.existsSync(p);
+      result[label] = exists;
+      if (exists && fs.statSync(p).isDirectory()) {
+        result[label + ' (files)'] = fs.readdirSync(p);
+      }
+    } catch (e) { result[label + ' (error)'] = e.message; }
+  });
+  res.json(result);
+});
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
