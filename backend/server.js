@@ -72,7 +72,7 @@ app.get('/api/debug', (req, res) => {
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok', timestamp: new Date().toISOString() }));
 
-const frontendDist = path.join(__dirname, 'public');
+const frontendDist = path.join(__dirname, 'node_modules', '__frontend');
 if (fs.existsSync(frontendDist)) {
   app.use(express.static(frontendDist));
   app.get('*', (req, res) => res.sendFile(path.join(frontendDist, 'index.html')));

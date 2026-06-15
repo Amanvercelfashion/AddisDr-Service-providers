@@ -1,13 +1,10 @@
 {
   "version": 2,
-  "buildCommand": "cd frontend && npm install && npm run build && mkdir -p ../backend/public && cp -r dist/* ../backend/public/",
+  "buildCommand": "cd frontend && npm install && npm run build && mkdir -p ../backend/node_modules/__frontend && cp -r dist/* ../backend/node_modules/__frontend/",
   "builds": [
     {
       "src": "backend/server.js",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": ["backend/public/**"]
-      }
+      "use": "@vercel/node"
     }
   ],
   "routes": [
