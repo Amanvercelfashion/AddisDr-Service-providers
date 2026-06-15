@@ -59,7 +59,8 @@ app.get('/api/debug', (req, res) => {
     { label: '__dirname', p: __dirname },
     { label: 'cwd', p: process.cwd() },
   ];
-  const result = { req: { url: req.url, originalUrl: req.originalUrl, path: req.path }, env: { ALLOWED_ORIGINS: process.env.ALLOWED_ORIGINS } };
+  const dbUrl = process.env.DATABASE_URL;
+  const result = { req: { url: req.url, originalUrl: req.originalUrl, path: req.path }, env: { ALLOWED_ORIGINS: process.env.ALLOWED_ORIGINS, DATABASE_URL: dbUrl ? dbUrl.replace(/\/\/.*@/, '//***:***@') : '(not set)' } };
   fsPaths.forEach(({ label, p }) => {
     try {
       const exists = fs.existsSync(p);
