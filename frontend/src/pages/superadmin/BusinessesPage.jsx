@@ -408,7 +408,7 @@ function HamburgerMenu({ biz, token, onEdit, onToggle, onDelete, onPasswordSet }
             <Settings size={14} /> Open Admin Panel
           </a>
           <a
-            href={`/store?business=${biz.id}`}
+            href={`/${biz.subdomain}`}
             target="_blank" rel="noopener noreferrer"
             className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50"
             onClick={() => setOpen(false)}
