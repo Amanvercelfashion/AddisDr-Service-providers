@@ -24,10 +24,6 @@ backend/uploads/
 frontend/dist/
 dist/
 
-# ── Seed scripts (not needed in production) ───────────────────────────────────
-backend/seed-samples.js
-backend/seed-images.js
-
 # ── OS / editor files ─────────────────────────────────────────────────────────
 .DS_Store
 Thumbs.db
