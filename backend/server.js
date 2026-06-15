@@ -20,6 +20,15 @@ app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 const allowedOrigins = (process.env.ALLOWED_ORIGINS || '*')
   .split(',').map(s => s.trim()).filter(Boolean);
 
+app.use((req, res, next) => {
+  const host = req.headers.host || process.env.VERCEL_URL;
+  if (host) {
+    const origin = host.startsWith('http') ? host : `https://${host}`;
+    if (!allowedOrigins.includes(origin)) allowedOrigins.push(origin);
+  }
+  next();
+});
+
 app.use(cors({
   origin: (origin, callback) => {
     if (allowedOrigins.includes('*') || !origin || allowedOrigins.includes(origin)) callback(null, true);
