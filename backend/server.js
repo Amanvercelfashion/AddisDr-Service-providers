@@ -51,11 +51,10 @@ app.use('/api/analytics', require('./routes/analytics'));
 app.get('/api/debug', (req, res) => {
   const candidates = [
     { label: '__dirname', p: __dirname },
-    { label: 'public (rel __dirname)', p: path.join(__dirname, 'public') },
-    { label: 'public/index.html', p: path.join(__dirname, 'public', 'index.html') },
-    { label: '../frontend/dist', p: path.join(__dirname, '..', 'frontend', 'dist') },
+    { label: '__dirname/node_modules', p: path.join(__dirname, 'node_modules') },
+    { label: '__dirname/node_modules/__frontend', p: path.join(__dirname, 'node_modules', '__frontend') },
+    { label: '__dirname/node_modules/__frontend/index.html', p: path.join(__dirname, 'node_modules', '__frontend', 'index.html') },
     { label: 'cwd', p: process.cwd() },
-    { label: 'cwd/backend/public', p: path.join(process.cwd(), 'backend', 'public') },
   ];
   const result = {};
   candidates.forEach(({ label, p }) => {
