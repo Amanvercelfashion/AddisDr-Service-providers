@@ -49,18 +49,15 @@ app.use('/api/feedback', require('./routes/feedback'));
 app.use('/api/analytics', require('./routes/analytics'));
 
 app.get('/api/debug', (req, res) => {
-  const candidates = [
+  const fsPaths = [
     { label: '__dirname', p: __dirname },
     { label: 'cwd', p: process.cwd() },
-    { label: 'req.url', p: req.url },
-    { label: 'req.originalUrl', p: req.originalUrl },
-    { label: 'req.path', p: req.path },
   ];
-  const result = {};
-  candidates.forEach(({ label, p }) => {
+  const result = { req: { url: req.url, originalUrl: req.originalUrl, path: req.path } };
+  fsPaths.forEach(({ label, p }) => {
     try {
-      const exists = typeof p !== 'string' ? null : fs.existsSync(p);
-      result[label] = exists === null ? p : exists;
+      const exists = fs.existsSync(p);
+      result[label] = exists;
       if (exists && fs.statSync(p).isDirectory()) {
         result[label + ' (files)'] = fs.readdirSync(p);
       }
