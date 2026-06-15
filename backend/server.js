@@ -18,12 +18,12 @@ const PORT = process.env.PORT || 4000;
 
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 
-const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'http://localhost:5173,http://localhost:3000')
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || '*')
   .split(',').map(s => s.trim()).filter(Boolean);
 
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) callback(null, true);
+    if (allowedOrigins.includes('*') || !origin || allowedOrigins.includes(origin)) callback(null, true);
     else callback(new Error('Not allowed by CORS'));
   },
   credentials: true
@@ -50,7 +50,7 @@ app.use('/api/analytics', require('./routes/analytics'));
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok', timestamp: new Date().toISOString() }));
 
-const frontendDist = path.join(__dirname, 'public');
+const frontendDist = path.join(__dirname, '..', 'frontend', 'dist');
 if (fs.existsSync(frontendDist)) {
   app.use(express.static(frontendDist));
   app.get('*', (req, res) => res.sendFile(path.join(frontendDist, 'index.html')));
