@@ -1,14 +1,21 @@
 {
   "version": 2,
-  "buildCommand": "cd frontend && npm install && npm run build && mkdir -p ../backend/node_modules/__frontend && cp -r dist/* ../backend/node_modules/__frontend/",
   "builds": [
     {
-      "src": "backend/server.js",
+      "src": "backend/package.json",
       "use": "@vercel/node"
+    },
+    {
+      "src": "frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
     }
   ],
   "routes": [
     { "src": "/api/(.*)", "dest": "backend/server.js" },
-    { "src": "/(.*)", "dest": "backend/server.js" }
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
