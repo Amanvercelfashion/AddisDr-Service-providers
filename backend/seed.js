@@ -13,7 +13,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 const sectors = [
   {
     name: 'Savory Bites Restaurant',
-    subdomain: 'restaurant',
+    subdomain: 'savory-bites-restaurant',
     tagline: 'Fresh flavors, unforgettable dining',
     about: 'A contemporary fine-dining restaurant blending local ingredients with global techniques. Our chefs craft seasonal menus in a warm, inviting atmosphere perfect for any occasion.',
     phone: '+1-555-0101',
@@ -71,7 +71,7 @@ const sectors = [
   },
   {
     name: 'Refined Grooming Lounge',
-    subdomain: 'refined',
+    subdomain: 'refined-grooming-lounge',
     tagline: 'Barber, salon & spa — all in one',
     about: 'Your one-stop destination for premium grooming. From classic barber cuts and modern hairstyling to relaxing spa treatments and nail care, we offer a complete self-care experience under one roof.',
     phone: '+1-555-0202',
@@ -142,7 +142,7 @@ const sectors = [
   },
   {
     name: 'BrightCare Dental Clinic',
-    subdomain: 'dental',
+    subdomain: 'brightcare-dental-clinic',
     tagline: 'Healthy smiles for the whole family',
     about: 'A modern dental clinic offering comprehensive oral care in a comfortable, anxiety-free environment. From routine checkups to advanced cosmetic dentistry, we treat every patient like family.',
     phone: '+1-555-0303',
@@ -209,7 +209,7 @@ const sectors = [
   },
   {
     name: 'Elevate Events & Fitness',
-    subdomain: 'elevate',
+    subdomain: 'elevate-events-and-fitness',
     tagline: 'Celebrate, train, thrive',
     about: 'A premier event venue and fitness center under one roof. Host unforgettable celebrations in our elegant spaces, then crush your fitness goals in our state-of-the-art gym. Two passions, one destination.',
     phone: '+1-555-0404',
@@ -269,7 +269,7 @@ const sectors = [
   },
   {
     name: 'LinguaBridge Tutoring',
-    subdomain: 'tutoring',
+    subdomain: 'linguabridge-tutoring',
     tagline: 'Speak the world, one lesson at a time',
     about: 'Expert language tutoring for all levels and ages. Whether you are preparing for exams, relocating abroad, or simply passionate about languages, our certified native-fluent instructors make learning effective and enjoyable.',
     phone: '+1-555-0505',
@@ -338,7 +338,7 @@ const sectors = [
   },
   {
     name: 'Lens & Light Photography',
-    subdomain: 'photography',
+    subdomain: 'lens-and-light-photography',
     tagline: 'Capturing moments that last forever',
     about: 'A full-service photography studio specializing in portraits, events, and commercial shoots. Our team of award-winning photographers brings creativity and professionalism to every project.',
     phone: '+1-555-0606',
@@ -493,12 +493,12 @@ async function seedSector(sector) {
 }
 
 const placeholders = {
-  restaurant: { initials: 'SB', color: '7f1d1d' },
-  refined:    { initials: 'RG', color: '1e293b' },
-  dental:     { initials: 'BD', color: '0c4a6e' },
-  elevate:    { initials: 'EF', color: '1e1b4b' },
-  tutoring:   { initials: 'LT', color: '064e3b' },
-  photography:{ initials: 'LL', color: '1c1917' },
+  'savory-bites-restaurant':   { initials: 'SB', color: '7f1d1d' },
+  'refined-grooming-lounge':   { initials: 'RG', color: '1e293b' },
+  'brightcare-dental-clinic':  { initials: 'BD', color: '0c4a6e' },
+  'elevate-events-and-fitness':{ initials: 'EF', color: '1e1b4b' },
+  'linguabridge-tutoring':     { initials: 'LT', color: '064e3b' },
+  'lens-and-light-photography':{ initials: 'LL', color: '1c1917' },
 };
 
 async function addImages() {
@@ -567,7 +567,7 @@ async function run() {
   }
 
   // Remove old subdomains that don't match the new list
-  const oldSubdomains = ['sample', 'barbershop', 'salon', 'venue'];
+  const oldSubdomains = ['sample', 'barbershop', 'salon', 'venue', 'restaurant', 'refined', 'dental', 'elevate', 'tutoring', 'photography'];
   const newSubdomains = sectors.map(s => s.subdomain);
   for (const old of oldSubdomains) {
     if (!newSubdomains.includes(old)) {
