@@ -52,15 +52,15 @@ app.get('/api/debug', (req, res) => {
   const candidates = [
     { label: '__dirname', p: __dirname },
     { label: 'cwd', p: process.cwd() },
-    { label: 'cwd/frontend', p: path.join(process.cwd(), 'frontend') },
-    { label: 'cwd/frontend/dist', p: path.join(process.cwd(), 'frontend', 'dist') },
-    { label: 'cwd/frontend/dist/index.html', p: path.join(process.cwd(), 'frontend', 'dist', 'index.html') },
+    { label: 'req.url', p: req.url },
+    { label: 'req.originalUrl', p: req.originalUrl },
+    { label: 'req.path', p: req.path },
   ];
   const result = {};
   candidates.forEach(({ label, p }) => {
     try {
-      const exists = fs.existsSync(p);
-      result[label] = exists;
+      const exists = typeof p !== 'string' ? null : fs.existsSync(p);
+      result[label] = exists === null ? p : exists;
       if (exists && fs.statSync(p).isDirectory()) {
         result[label + ' (files)'] = fs.readdirSync(p);
       }
@@ -70,12 +70,6 @@ app.get('/api/debug', (req, res) => {
 });
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok', timestamp: new Date().toISOString() }));
-
-const frontendDist = path.join(process.cwd(), 'frontend', 'dist');
-if (fs.existsSync(frontendDist)) {
-  app.use(express.static(frontendDist));
-  app.get('*', (req, res) => res.sendFile(path.join(frontendDist, 'index.html')));
-}
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
