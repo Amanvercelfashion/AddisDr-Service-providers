@@ -5,14 +5,26 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }
 });
 
+pool.on('error', err => {
+  console.error('Unexpected pool error:', err.message);
+});
+
 async function query(text, params) {
-  const res = await pool.query(text, params);
-  return res.rows;
+  try {
+    const res = await pool.query(text, params);
+    return res.rows;
+  } catch (err) {
+    throw new Error(`Database query error: ${err.message}`);
+  }
 }
 
 async function queryOne(text, params) {
-  const res = await pool.query(text, params);
-  return res.rows[0] || null;
+  try {
+    const res = await pool.query(text, params);
+    return res.rows[0] || null;
+  } catch (err) {
+    throw new Error(`Database query error: ${err.message}`);
+  }
 }
 
 function getBusinessId(req) {
