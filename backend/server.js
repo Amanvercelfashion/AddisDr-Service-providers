@@ -48,14 +48,6 @@ app.use('/api/reservations', reservationLimiter, require('./routes/reservations'
 app.use('/api/feedback', require('./routes/feedback'));
 app.use('/api/analytics', require('./routes/analytics'));
 
-app.get('/api/health', (req, res) => res.json({ status: 'ok', timestamp: new Date().toISOString() }));
-
-const frontendDist = path.join(__dirname, 'public');
-if (fs.existsSync(frontendDist)) {
-  app.use(express.static(frontendDist));
-  app.get('*', (req, res) => res.sendFile(path.join(frontendDist, 'index.html')));
-}
-
 app.get('/api/debug', (req, res) => {
   const candidates = [
     { label: '__dirname', p: __dirname },
@@ -77,6 +69,14 @@ app.get('/api/debug', (req, res) => {
   });
   res.json(result);
 });
+
+app.get('/api/health', (req, res) => res.json({ status: 'ok', timestamp: new Date().toISOString() }));
+
+const frontendDist = path.join(__dirname, 'public');
+if (fs.existsSync(frontendDist)) {
+  app.use(express.static(frontendDist));
+  app.get('*', (req, res) => res.sendFile(path.join(frontendDist, 'index.html')));
+}
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
