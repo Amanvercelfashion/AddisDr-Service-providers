@@ -93,10 +93,19 @@ export default function PlatformHome() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-blue-950 flex flex-col">
+    <div className="min-h-screen flex flex-col relative">
+
+      {/* Full-screen hero background */}
+      <div className="fixed inset-0 -z-10">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: 'url(/images/hero.jpg)' }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-900/90 via-slate-800/85 to-blue-950/90" />
+      </div>
 
       {/* Nav */}
-      <nav className="flex items-center justify-between px-6 py-4 border-b border-white/10">
+      <nav className="flex items-center justify-between px-6 py-4 border-b border-white/10 relative z-10">
         <div className="flex items-center gap-2.5">
           <div className="bg-blue-600 rounded-lg p-1.5">
             <Scissors size={18} className="text-white" />
@@ -113,7 +122,7 @@ export default function PlatformHome() {
       </nav>
 
       {/* Hero */}
-      <div className="flex-1 flex flex-col items-center justify-center text-center px-4 py-20">
+      <div className="flex-1 flex flex-col items-center justify-center text-center px-4 py-20 relative z-10">
         <div className="inline-flex items-center gap-2 bg-blue-600/20 border border-blue-500/30 text-blue-300 text-xs font-medium px-3 py-1.5 rounded-full mb-6">
           <CheckCircle size={12} />
           Multi-tenant service booking platform

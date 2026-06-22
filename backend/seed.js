@@ -492,17 +492,35 @@ async function seedSector(sector) {
   return bid;
 }
 
-const placeholders = {
-  'savory-bites-restaurant':   { initials: 'SB', color: '7f1d1d' },
-  'refined-grooming-lounge':   { initials: 'RG', color: '1e293b' },
-  'brightcare-dental-clinic':  { initials: 'BD', color: '0c4a6e' },
-  'elevate-events-and-fitness':{ initials: 'EF', color: '1e1b4b' },
-  'linguabridge-tutoring':     { initials: 'LT', color: '064e3b' },
-  'lens-and-light-photography':{ initials: 'LL', color: '1c1917' },
+const imagePaths = {
+  'savory-bites-restaurant': {
+    logo: '/images/savory-bites-restaurant/logo.jpg',
+    hero: '/images/savory-bites-restaurant/hero.jpg',
+  },
+  'refined-grooming-lounge': {
+    logo: '/images/refined-grooming-lounge/logo.jpg',
+    hero: '/images/refined-grooming-lounge/hero.jpg',
+  },
+  'brightcare-dental-clinic': {
+    logo: '/images/brightcare-dental-clinic/logo.jpg',
+    hero: '/images/brightcare-dental-clinic/hero.jpg',
+  },
+  'elevate-events-and-fitness': {
+    logo: '/images/elevate-events-and-fitness/logo.jpg',
+    hero: '/images/elevate-events-and-fitness/hero.jpg',
+  },
+  'linguabridge-tutoring': {
+    logo: '/images/linguabridge-tutoring/logo.jpg',
+    hero: '/images/linguabridge-tutoring/hero.jpg',
+  },
+  'lens-and-light-photography': {
+    logo: '/images/lens-and-light-photography/logo.jpg',
+    hero: '/images/lens-and-light-photography/hero.jpg',
+  },
 };
 
 async function addImages() {
-  console.log('\n── Adding placeholder images ──');
+  console.log('\n── Adding real images ──');
 
   const { data: businesses, error: bErr } = await supabase
     .from('businesses')
@@ -510,11 +528,11 @@ async function addImages() {
   if (bErr) throw bErr;
 
   for (const biz of businesses) {
-    const p = placeholders[biz.subdomain] || { initials: biz.name.slice(0, 2), color: biz.color_primary?.replace('#', '') || '333' };
+    const paths = imagePaths[biz.subdomain];
 
-    // Update logo + hero
-    const logoUrl = `https://placehold.co/200x200/${p.color}/ffffff?text=${p.initials}`;
-    const heroUrl = `https://placehold.co/1200x400/${p.color}/ffffff?text=${encodeURIComponent(biz.name)}`;
+    // Update logo + hero with local images
+    const logoUrl = paths?.logo || `https://placehold.co/200x200/333/ffffff?text=${encodeURIComponent(biz.name[0])}`;
+    const heroUrl = paths?.hero || `https://placehold.co/1200x400/333/ffffff?text=${encodeURIComponent(biz.name)}`;
     const { error: upErr } = await supabase
       .from('businesses')
       .update({ logo_url: logoUrl, hero_image_url: heroUrl })
@@ -537,10 +555,11 @@ async function addImages() {
       if (delErr) throw delErr;
     }
 
+    // Use picsum.photos for service images — each service gets a unique real photo via seed
     const { error: imgErr } = await supabase.from('service_images').insert(
       services.map((svc, i) => ({
         service_id: svc.id,
-        image_url: `https://placehold.co/600x400/${p.color}/eeeeee?text=${encodeURIComponent(svc.name)}`,
+        image_url: `https://picsum.photos/seed/${encodeURIComponent(svc.name)}/600/400`,
         sort_order: i + 1,
       }))
     );
@@ -589,7 +608,7 @@ async function run() {
 
   await addImages();
 
-  console.log('\n✔ Seeding complete.\n');
+  console.log('\n✔ Seeding complete. Images served from /images/{business}/ (local) + picsum.photos (services).\n');
   console.log('Sectors:');
   sectors.forEach((s, i) => {
     console.log(`  ${i + 1}. ${s.name}  — subdomain: "${s.subdomain}"  — admin: "${s.admin_password}"`);
