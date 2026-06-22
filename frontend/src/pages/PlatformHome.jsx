@@ -4,6 +4,7 @@ import {
   Settings, Eye, Scissors
 } from 'lucide-react';
 import axios from 'axios';
+import { resolveBusinessImage } from '../utils/images';
 
 // ── Per-business card menu ────────────────────────────────────────────────────
 
@@ -87,7 +88,10 @@ export default function PlatformHome() {
 
   useEffect(() => {
     axios.get('/api/business/directory')
-      .then(res => setBusinesses(res.data || []))
+      .then(res => setBusinesses((res.data || []).map(biz => ({
+        ...biz,
+        logo_url: resolveBusinessImage(biz, 'logo'),
+      }))))
       .catch(() => setBusinesses([]))
       .finally(() => setLoading(false));
   }, []);

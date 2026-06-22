@@ -572,7 +572,12 @@ export default function ServicePage() {
         {/* Content */}
         <div className="relative z-10 max-w-2xl">
           {business.logo_url && (
-            <img src={business.logo_url} alt={business.name} className="h-32 w-72 object-contain rounded-2xl mx-auto mb-5 shadow-xl" />
+            <img
+              src={business.logo_url}
+              alt={business.name}
+              className="h-32 w-72 object-contain rounded-2xl mx-auto mb-5 shadow-xl"
+              onError={e => { e.target.style.display = 'none' }}
+            />
           )}
           <h1 className="text-4xl sm:text-5xl font-extrabold text-white mb-3 leading-tight drop-shadow-lg">
             {business.name}

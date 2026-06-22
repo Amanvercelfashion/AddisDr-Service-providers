@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { ShoppingCart, Settings, ExternalLink } from 'lucide-react';
+import { ShoppingCart, Settings, ExternalLink, Building2 } from 'lucide-react';
 import { useBasket } from '../../context/BasketContext';
 import { useBusiness } from '../../context/BusinessContext';
 
@@ -47,6 +47,7 @@ export default function Header({ company }) {
   const { totalCount, setIsOpen } = useBasket();
   const { businessId } = useBusiness();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [logoError, setLogoError] = useState(false);
 
   return (
     <header
@@ -57,21 +58,19 @@ export default function Header({ company }) {
 
         {/* Logo & Brand */}
         <div className="flex items-center gap-3">
-          {company?.logo_url ? (
+          {company?.logo_url && !logoError ? (
             <img
               src={company.logo_url}
               alt={company.name}
               className="h-14 w-24 object-contain rounded-lg bg-white/20 border border-white/30 p-1 flex-shrink-0"
+              onError={() => setLogoError(true)}
             />
           ) : (
             <div
               className="h-14 w-24 rounded-lg flex items-center justify-center flex-shrink-0"
               style={{ backgroundColor: 'var(--color-primary)' }}
             >
-              {/* letter on primary bg — use --on-primary */}
-              <span className="font-bold text-2xl" style={{ color: 'var(--on-primary)' }}>
-                {company?.name?.[0] || 'S'}
-              </span>
+              <Building2 size={20} style={{ color: 'var(--on-primary)' }} />
             </div>
           )}
           <div>

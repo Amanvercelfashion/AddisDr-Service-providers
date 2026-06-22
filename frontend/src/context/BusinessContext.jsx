@@ -6,6 +6,7 @@
  */
 import { createContext, useContext, useState, useEffect } from 'react';
 import { getBusiness, getBusinessBySubdomain } from '../api';
+import { resolveBusinessImage } from '../utils/images';
 
 const BusinessContext = createContext(null);
 
@@ -50,6 +51,10 @@ export function BusinessProvider({ children, slug }) {
 
         if (resolvedId) {
           setBusinessId(resolvedId);
+          if (resolvedBusiness) {
+            resolvedBusiness.logo_url = resolveBusinessImage(resolvedBusiness, 'logo');
+            resolvedBusiness.hero_image_url = resolveBusinessImage(resolvedBusiness, 'hero');
+          }
           setBusiness(resolvedBusiness);
         }
       } catch (err) {
