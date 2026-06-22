@@ -24,6 +24,7 @@ import {
   getServices, getServiceCategories, getWorkHoursStatus, getWorkHours,
   getStaff, getPublicFeedback, submitFeedback, logReservationClick
 } from '../api';
+import { getServiceFallbackImage } from '../utils/images';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -75,15 +76,20 @@ function ClosedBanner({ status, phone }) {
 
 function Gallery({ images, visible }) {
   const [idx, setIdx] = useState(0);
+  const [galleryErr, setGalleryErr] = useState(false);
   if (!visible || !images || images.length === 0) return null;
+
+  const currentSrc = !galleryErr ? images[idx]?.image_url : images.find((_, i) => i !== idx)?.image_url;
 
   return (
     <div className="mt-3">
       <div className="relative overflow-hidden rounded-xl bg-gray-100 aspect-video">
         <img
-          src={images[idx]?.image_url}
+          key={idx}
+          src={currentSrc}
           alt=""
           className="w-full h-full object-cover"
+          onError={() => setGalleryErr(true)}
         />
         {images.length > 1 && (
           <>
@@ -122,10 +128,13 @@ function Gallery({ images, visible }) {
 
 function ServiceCard({ service, galleryEnabled }) {
   const [galleryOpen, setGalleryOpen] = useState(false);
+  const [imgError, setImgError] = useState(false);
   const { primary, onPrimary } = useTheme();
+  const { business } = useBusiness();
   const windows = parseTimeWindows(service.time_windows);
   const hasImages = service.show_gallery && galleryEnabled && service.images?.length > 0;
-  const coverImage = service.images?.[0]?.image_url || null;
+  const fallbackImg = getServiceFallbackImage(business?.subdomain, service.category_name);
+  const coverImage = (!imgError && service.images?.[0]?.image_url) || fallbackImg || null;
   // Gallery images are all images after the first (or all if only 1)
   const galleryImages = service.images?.length > 1 ? service.images.slice(1) : service.images || [];
 
@@ -139,6 +148,7 @@ function ServiceCard({ service, galleryEnabled }) {
             src={coverImage}
             alt={service.name}
             className="w-full h-full object-cover"
+            onError={() => setImgError(true)}
           />
         </div>
       ) : (

@@ -519,6 +519,43 @@ const imagePaths = {
   },
 };
 
+const categoryImageMap = {
+  'savory-bites-restaurant': {
+    'Dine-In Experience': '/images/savory-bites-restaurant/dine-in.jpg',
+    'Private Events': '/images/savory-bites-restaurant/private-events.jpg',
+    'Catering & Takeaway': '/images/savory-bites-restaurant/catering.jpg',
+  },
+  'refined-grooming-lounge': {
+    'Barber Services': '/images/refined-grooming-lounge/barber.jpg',
+    'Salon Services': '/images/refined-grooming-lounge/salon.jpg',
+    'Nail Care': '/images/refined-grooming-lounge/nail.jpg',
+    'Spa & Massage': '/images/refined-grooming-lounge/spa.jpg',
+  },
+  'brightcare-dental-clinic': {
+    'General Dentistry': '/images/brightcare-dental-clinic/general-dentistry.jpg',
+    'Cosmetic Dentistry': '/images/brightcare-dental-clinic/cosmetic.jpg',
+    'Restorative & Surgical': '/images/brightcare-dental-clinic/restorative.jpg',
+    'Pediatric Dentistry': '/images/brightcare-dental-clinic/pediatric.jpg',
+  },
+  'elevate-events-and-fitness': {
+    'Event Spaces': '/images/elevate-events-and-fitness/event-spaces.jpg',
+    'Fitness Memberships': '/images/elevate-events-and-fitness/fitness.jpg',
+    'Training & Classes': '/images/elevate-events-and-fitness/training.jpg',
+  },
+  'linguabridge-tutoring': {
+    'European Languages': '/images/linguabridge-tutoring/european-languages.jpg',
+    'Asian Languages': '/images/linguabridge-tutoring/asian-languages.jpg',
+    'Exam Preparation': '/images/linguabridge-tutoring/exam-prep.jpg',
+    'Special Programs': '/images/linguabridge-tutoring/special-programs.jpg',
+  },
+  'lens-and-light-photography': {
+    'Portrait Photography': '/images/lens-and-light-photography/portrait.jpg',
+    'Event Photography': '/images/lens-and-light-photography/event.jpg',
+    'Commercial': '/images/lens-and-light-photography/commercial.jpg',
+    'Prints & Albums': '/images/lens-and-light-photography/prints.jpg',
+  },
+};
+
 async function addImages() {
   console.log('\n── Adding real images ──');
 
@@ -539,10 +576,18 @@ async function addImages() {
       .eq('id', biz.id);
     if (upErr) throw upErr;
 
-    // Clear old service images for this business, then insert fresh ones
+    // Fetch categories and services with category info
+    const { data: categories } = await supabase
+      .from('service_categories')
+      .select('id, name')
+      .eq('business_id', biz.id);
+
+    const catMap = {};
+    if (categories) categories.forEach(c => { catMap[c.id] = c.name; });
+
     const { data: services, error: svcErr } = await supabase
       .from('services')
-      .select('id, name')
+      .select('id, name, category_id')
       .eq('business_id', biz.id);
     if (svcErr) throw svcErr;
 
@@ -555,17 +600,22 @@ async function addImages() {
       if (delErr) throw delErr;
     }
 
-    // Use picsum.photos for service images — each service gets a unique real photo via seed
+    const categoryImages = categoryImageMap[biz.subdomain] || {};
+
     const { error: imgErr } = await supabase.from('service_images').insert(
-      services.map((svc, i) => ({
-        service_id: svc.id,
-        image_url: `https://picsum.photos/seed/${encodeURIComponent(svc.name)}/600/400`,
-        sort_order: i + 1,
-      }))
+      services.map((svc, i) => {
+        const catName = catMap[svc.category_id];
+        const localUrl = categoryImages[catName];
+        return {
+          service_id: svc.id,
+          image_url: localUrl || `https://picsum.photos/seed/${encodeURIComponent(svc.name)}/600/400`,
+          sort_order: i + 1,
+        };
+      })
     );
     if (imgErr) throw imgErr;
 
-    console.log(`✓ ${biz.name} — logo, hero, ${services.length} service images`);
+    console.log(`✓ ${biz.name} — logo, hero, ${services.length} service images (using local category images)`);
   }
 }
 
